@@ -6,6 +6,11 @@ XX Xxx XXXX
 
 * UNRELEASED
 * New `statx(2)` function was added: glibc supports it since 2.28.
+* The `fakechroot`(1) command now supports an environment variable called
+  `FAKECHROOT_NOEXPAND_SYMLINK_TARGET`, which disables path expansion on
+  the targets of symlink syscalls. This more closely resmebles traditional
+  `chroot` behavior, which treats the target of a symlink as an opaque
+  string rather than a path.
 
 ## Version 2.20.1
 
