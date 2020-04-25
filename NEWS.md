@@ -7,7 +7,7 @@ XX Xxx XXXX
 * UNRELEASED
 * New `fchdir`(3) and `statx`(2) functions were added: glibc supports
   `fchdir`(3) since 2.12 and `statx`(2) since 2.28.
-* New `pacstrap`(8) wrapper was added.
+* New `pacstrap`(8) and `arch-chroot`(8) wrappers were added.
 
 ## Version 2.20.1
 
