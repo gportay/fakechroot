@@ -1,10 +1,10 @@
 sysconfdir = @sysconfdir@/@PACKAGE@
 
-src_wrappers = chroot.fakechroot.sh env.fakechroot.sh fakechroot.sh ldd.fakechroot.pl
+src_wrappers = chroot.fakechroot.sh env.fakechroot.sh fakechroot.sh ldd.fakechroot.pl unshare.fakechroot
 src_envs = arch-chroot.env.sh chroot.env.sh debootstrap.env.sh pacstrap.env.sh rinse.env.sh
 example_scripts = relocatesymlinks.sh restoremode.sh savemode.sh
 
-bin_SCRIPTS = env.fakechroot fakechroot ldd.fakechroot
+bin_SCRIPTS = env.fakechroot fakechroot ldd.fakechroot unshare.fakechroot
 sbin_SCRIPTS = chroot.fakechroot
 sysconf_DATA = arch-chroot.env chroot.env debootstrap.env pacstrap.env rinse.env
 
@@ -31,6 +31,7 @@ do_subst = $(SED) -e 's,[@]bindir[@],$(bindir),g' \
                -e 's,[@]SHELL[@],$(SHELL),g' \
                -e 's,[@]SYSTEMCTL[@],$(SYSTEMCTL),g' \
                -e 's,[@]UMOUNT[@],$(UMOUNT),g' \
+               -e 's,[@]UNSHARE[@],$(UNSHARE),g' \
                -e 's,[@]VERSION[@],$(VERSION),g'
 
 arch-chroot.env: $(srcdir)/arch-chroot.env.sh
@@ -63,6 +64,10 @@ fakechroot: $(srcdir)/fakechroot.sh
 
 ldd.fakechroot: $(srcdir)/ldd.fakechroot.pl
 	$(do_subst) < $(srcdir)/ldd.fakechroot.pl > $@
+	chmod +x $@
+
+unshare.fakechroot: $(srcdir)/unshare.fakechroot.sh
+	$(do_subst) < $(srcdir)/unshare.fakechroot.sh > $@
 	chmod +x $@
 
 rinse.env: $(srcdir)/rinse.env.sh
