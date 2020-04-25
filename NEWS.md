@@ -6,7 +6,7 @@ XX Xxx XXXX
 
 * UNRELEASED
 * New `statx(2)` function was added: glibc supports it since 2.28.
-* New `pacstrap`(8) and `arch-chroot`(8) wrappers were added.
+* New `pacstrap`(8), `arch-chroot`(8) and `unshare`(1) wrappers were added.
 
 ## Version 2.20.1
 
