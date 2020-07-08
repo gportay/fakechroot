@@ -55,6 +55,7 @@ libfakechroot_la_SOURCES = \
     execve.c \
     execvp.c \
     faccessat.c \
+    fchdir.c \
     fchmodat.c \
     fchownat.c \
     fopen.c \
