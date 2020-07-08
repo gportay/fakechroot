@@ -23,6 +23,7 @@
 #include <string.h>
 #include "libfakechroot.h"
 #include "getcwd_real.h"
+#include "dedotdot.h"
 
 
 wrapper(chdir, int, (const char * path))
@@ -31,6 +32,7 @@ wrapper(chdir, int, (const char * path))
     char fakechroot_buf[FAKECHROOT_PATH_MAX];
 
     char cwd[FAKECHROOT_PATH_MAX];
+    char tmp[FAKECHROOT_PATH_MAX], *tmpptr = tmp;
 
     const char *fakechroot_base = getenv("FAKECHROOT_BASE");
 
@@ -39,6 +41,25 @@ wrapper(chdir, int, (const char * path))
     if (getcwd_real(cwd, FAKECHROOT_PATH_MAX) == NULL) {
         return -1;
     }
+    if (*path != '/') {
+        size_t tmplen;
+        snprintf(tmp, FAKECHROOT_PATH_MAX, "%s/%s", cwd, path);
+        dedotdot(tmpptr);
+        path = tmpptr;
+        tmplen = strlen(tmpptr);
+        while(tmplen > 1 && tmpptr[tmplen - 1] == '/') {
+            tmpptr[--tmplen] = '\0';
+        }
+        if (fakechroot_base != NULL && strstr(path, fakechroot_base) == NULL) {
+            char *ld_library_path;
+            unsetenv("FAKECHROOT_BASE");
+            unsetenv("LD_LIBRARY_PATH");
+            ld_library_path = getenv("FAKECHROOT_LDLIBPATH");
+            if (ld_library_path)
+                setenv("LD_LIBRARY_PATH", ld_library_path, 1);
+	}
+    }
+    fakechroot_base = getenv("FAKECHROOT_BASE");
     if (fakechroot_base != NULL) {
         if (strstr(cwd, fakechroot_base) == cwd) {
             expand_chroot_path(path);

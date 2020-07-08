@@ -79,10 +79,22 @@ wrapper(chroot, int, (const char * path))
     }
 
     if (fakechroot_base != NULL && strstr(cwd, fakechroot_base) == cwd) {
-        expand_chroot_path(path);
-        strlcpy(tmp, path, FAKECHROOT_PATH_MAX);
-        dedotdot(tmpptr);
-        path = tmpptr;
+        size_t tmplen;
+        if (*path != '/') {
+            expand_chroot_path(path);
+            strlcpy(tmp, path, FAKECHROOT_PATH_MAX);
+            dedotdot(tmpptr);
+            path = tmpptr;
+        }
+        else {
+            snprintf(tmp, FAKECHROOT_PATH_MAX, "%s/%s", cwd, path);
+            dedotdot(tmpptr);
+            path = tmpptr;
+        }
+        tmplen = strlen(tmpptr);
+        while(tmplen > 1 && tmpptr[tmplen - 1] == '/') {
+            tmpptr[--tmplen] = '\0';
+        }
     }
     else {
         size_t tmplen;
@@ -115,6 +127,16 @@ wrapper(chroot, int, (const char * path))
     if ((sb.st_mode & S_IFMT) != S_IFDIR) {
         __set_errno(ENOTDIR);
         return -1;
+    }
+
+    if (strcmp(path, "/") == 0) {
+        char *ld_library_path;
+        unsetenv("FAKECHROOT_BASE");
+        unsetenv("LD_LIBRARY_PATH");
+        ld_library_path = getenv("FAKECHROOT_LDLIBPATH");
+        if (ld_library_path)
+            setenv("LD_LIBRARY_PATH", ld_library_path, 1);
+        return 0;
     }
 
     if (setenv("FAKECHROOT_BASE", path, 1) == -1) {

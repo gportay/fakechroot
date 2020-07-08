@@ -22,14 +22,36 @@
 
 #ifdef HAVE_FCHDIR
 
+#include <string.h>
 #include "libfakechroot.h"
 #include "getcwd_real.h"
 
 
 wrapper(fchdir, int, (int fd))
 {
+    char cwd[FAKECHROOT_PATH_MAX];
+
+    const char *fakechroot_base = getenv("FAKECHROOT_BASE");
+
     debug("fchdir(%d)", fd);
-    return nextcall(fchdir)(fd);
+    int ret = nextcall(fchdir)(fd);
+    if (ret) {
+	    return ret;
+    }
+
+    if (getcwd_real(cwd, FAKECHROOT_PATH_MAX) == NULL) {
+        return -1;
+    }
+    if (fakechroot_base != NULL && strstr(cwd, fakechroot_base) == NULL) {
+        char *ld_library_path;
+        unsetenv("FAKECHROOT_BASE");
+        unsetenv("LD_LIBRARY_PATH");
+        ld_library_path = getenv("FAKECHROOT_LDLIBPATH");
+        if (ld_library_path)
+            setenv("LD_LIBRARY_PATH", ld_library_path, 1);
+    }
+
+    return ret;
 }
 
 #else
