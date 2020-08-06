@@ -6,7 +6,10 @@ XX Xxx XXXX
 
 * UNRELEASED
 * New `statx(2)` function was added: glibc supports it since 2.28.
-* New `pacstrap`(8), `arch-chroot`(8) and `unshare`(1) wrappers were added.
+* New `pacstrap`(8), `arch-chroot`(8) and `unshare`(1) wrappers.
+* The `fakechroot`(1) disables symlink expansion for absolute symlinks listed
+  by the environment variable `FAKECHROOT_EXCLUDE_SYMLINK`. That list contains
+  at most 100 elements.
 
 ## Version 2.20.1
 

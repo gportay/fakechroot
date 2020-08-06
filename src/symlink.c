@@ -29,7 +29,8 @@ wrapper(symlink, int, (const char * oldpath, const char * newpath))
     char fakechroot_buf[FAKECHROOT_PATH_MAX];
     char tmp[FAKECHROOT_PATH_MAX];
     debug("symlink(\"%s\", \"%s\")", oldpath, newpath);
-    expand_chroot_rel_path(oldpath);
+    if (!fakechroot_localsymlink(newpath))
+        expand_chroot_rel_path(oldpath);
     strcpy(tmp, oldpath);
     oldpath = tmp;
     expand_chroot_path(newpath);
