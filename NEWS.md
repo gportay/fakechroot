@@ -8,6 +8,9 @@ XX Xxx XXXX
 * New `fchdir`(3) and `statx`(2) functions were added: glibc supports
   `fchdir`(3) since 2.12 and `statx`(2) since 2.28.
 * New `pacstrap`(8), `arch-chroot`(8) and `unshare`(1) wrappers were added.
+* The `fakechroot`(1) disables symlink expansion for absolute symlinks listed
+  by the environment variable `FAKECHROOT_EXCLUDE_SYMLINK`. That list contains
+  at most 100 elements.
 
 ## Version 2.20.1
 
