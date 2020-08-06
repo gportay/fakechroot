@@ -27,7 +27,7 @@ prepare () {
     "$srcdir/testtree.sh" $testtree
     test "`cat $testtree/CHROOT 2>&1`" = "$testtree" || bail_out "cannot create $testtree"
 
-    unset FAKECHROOT_CMD_SUBST FAKECHROOT_DEBUG FAKECHROOT_EXCLUDE_PATH
+    unset FAKECHROOT_CMD_SUBST FAKECHROOT_DEBUG FAKECHROOT_EXCLUDE_PATH FAKECHROOT_EXCLUDE_SYMLINK
 }
 
 . "$srcdir/seq.inc.sh"

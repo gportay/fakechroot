@@ -70,7 +70,8 @@ directly.
 Load additional configuration with environment. This configuration file
 is a shell script which is executed before calling I<command>. The
 script can set additional environment variables, like i.e.:
-C<FAKECHROOT_EXCLUDE_PATH>, C<FAKECHROOT_CMD_SUBST> or C<LD_LIBRARY_PATH>.
+C<FAKECHROOT_EXCLUDE_PATH>, C<FAKECHROOT_EXCLUDE_SYMLINK>,
+C<FAKECHROOT_CMD_SUBST> or C<LD_LIBRARY_PATH>.
 
 The environment type is guessed based on command name with optional extension
 removed (e.g. running F<gettext.sh> loads C<gettext> environment file). If
@@ -295,6 +296,17 @@ of list are separated with colon.
 
 The F</dev>, F</proc> and F</sys> directories are excluded by default if this
 environment variable is not set.
+
+This list has to contain at most 100 elements.
+
+=item B<FAKECHROOT_EXCLUDE_SYMLINK>
+
+The list of absolute symlinks or directories which are excluded from being
+expanded. The elements of list are separated with colon.
+
+The symlink F</var/lib/dbus/machine-id> and the symlinks below the directory
+F</etc/systemd> are excluded by default if this environment variable is not
+set.
 
 This list has to contain at most 100 elements.
 
