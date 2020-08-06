@@ -39,3 +39,7 @@ fakechroot_debootstrap_env_paths=`
 `${FAKECHROOT_EXTRA_LIBRARY_PATH:-/lib/systemd:/usr/lib/man-db}
 LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}${fakechroot_debootstrap_env_paths%:}"
 export LD_LIBRARY_PATH
+
+# Set the default list of symlink excluded from being chrooted
+FAKECHROOT_EXCLUDE_SYMLINK="${FAKECHROOT_EXCLUDE_SYMLINK:-/etc/systemd:/var/lib/dbus/machine-id}"
+export FAKECHROOT_EXCLUDE_SYMLINK
