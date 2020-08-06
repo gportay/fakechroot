@@ -24,6 +24,10 @@ FAKECHROOT_CMD_SUBST="${FAKECHROOT_CMD_SUBST:+$FAKECHROOT_CMD_SUBST:}`echo "$fak
 FAKECHROOT_EXCLUDE_PATH="${FAKECHROOT_EXCLUDE_PATH:-/dev:/proc:/sys}"
 export FAKECHROOT_EXCLUDE_PATH
 
+# Set the default list of symlink excluded from being chrooted
+FAKECHROOT_EXCLUDE_SYMLINK="${FAKECHROOT_EXCLUDE_SYMLINK:-/etc/systemd:/var/lib/dbus/machine-id}"
+export FAKECHROOT_EXCLUDE_SYMLINK
+
 # Change path for unix sockets because we don't want to exceed 108 bytes
 FAKECHROOT_AF_UNIX_PATH=/tmp
 export FAKECHROOT_AF_UNIX_PATH

@@ -21,6 +21,10 @@ export FAKECHROOT_CMD_SUBST
 FAKECHROOT_EXCLUDE_PATH="${FAKECHROOT_EXCLUDE_PATH:-/dev:/proc:/sys}"
 export FAKECHROOT_EXCLUDE_PATH
 
+# Set the default list of symlink excluded from being chrooted
+FAKECHROOT_EXCLUDE_SYMLINK="${FAKECHROOT_EXCLUDE_SYMLINK:-/etc/systemd:/var/lib/dbus/machine-id}"
+export FAKECHROOT_EXCLUDE_SYMLINK
+
 # Set the LD_LIBRARY_PATH based on host's /etc/ld.so.conf.d/*
 fakechroot_pacstrap_env_paths=`
     cat /etc/ld.so.conf /etc/ld.so.conf.d/* 2>/dev/null | grep ^/ | while read fakechroot_pacstrap_env_d; do
