@@ -10,6 +10,7 @@ XX Xxx XXXX
 * The `fakechroot`(1) disables symlink expansion for absolute symlinks listed
   by the environment variable `FAKECHROOT_EXCLUDE_SYMLINK`. That list contains
   at most 100 elements.
+* New `mount`(2) function was added.
 
 ## Version 2.20.1
 
