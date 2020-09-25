@@ -248,6 +248,7 @@ AC_CHECK_FUNCS(m4_normalize([
     mkstemps
     mkstemps64
     mktemp
+    mount
     nftw
     nftw64
     open
