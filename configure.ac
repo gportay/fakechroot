@@ -292,6 +292,7 @@ AC_CHECK_FUNCS(m4_normalize([
     tmpnam
     truncate
     truncate64
+    umount
     unlink
     unlinkat
     unsetenv
