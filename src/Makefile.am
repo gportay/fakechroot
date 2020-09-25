@@ -168,6 +168,7 @@ libfakechroot_la_SOURCES = \
     truncate.c \
     truncate64.c \
     ulckpwdf.c \
+    umount.c \
     unlink.c \
     unlinkat.c \
     utime.c \
