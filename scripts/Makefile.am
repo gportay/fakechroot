@@ -1,12 +1,12 @@
 sysconfdir = @sysconfdir@/@PACKAGE@
 
 src_wrappers = chroot.fakechroot.sh env.fakechroot.sh fakechroot.sh ldd.fakechroot.pl unshare.fakechroot
-src_envs = arch-chroot.env.sh chroot.env.sh debootstrap.env.sh dnf.env.sh pacstrap.env.sh rinse.env.sh
+src_envs = alpine-make-rootfs.env.sh arch-chroot.env.sh chroot.env.sh debootstrap.env.sh dnf.env.sh pacstrap.env.sh rinse.env.sh
 example_scripts = relocatesymlinks.sh restoremode.sh savemode.sh
 
 bin_SCRIPTS = env.fakechroot fakechroot ldd.fakechroot unshare.fakechroot
 sbin_SCRIPTS = chroot.fakechroot
-sysconf_DATA = arch-chroot.env chroot.env dnf.env dnf-3.env debootstrap.env pacstrap.env rinse.env
+sysconf_DATA = alpine-make-rootfs.env arch-chroot.env chroot.env dnf.env dnf-3.env debootstrap.env pacstrap.env rinse.env
 
 EXTRA_DIST = $(src_wrappers) $(src_envs) $(example_scripts)
 CLEANFILES = $(bin_SCRIPTS) $(sbin_SCRIPTS) $(sysconf_DATA)
@@ -33,6 +33,10 @@ do_subst = $(SED) -e 's,[@]bindir[@],$(bindir),g' \
                -e 's,[@]UMOUNT[@],$(UMOUNT),g' \
                -e 's,[@]UNSHARE[@],$(UNSHARE),g' \
                -e 's,[@]VERSION[@],$(VERSION),g'
+
+alpine-make-rootfs.env: $(srcdir)/alpine-make-rootfs.env.sh
+	$(do_subst) < $(srcdir)/alpine-make-rootfs.env.sh > $@
+	chmod +x $@
 
 arch-chroot.env: $(srcdir)/arch-chroot.env.sh
 	$(do_subst) < $(srcdir)/arch-chroot.env.sh > $@
