@@ -45,10 +45,13 @@
 /* Useful to exclude a list of directories or files */
 static char *exclude_list[EXCLUDE_LIST_SIZE];
 static int exclude_length[EXCLUDE_LIST_SIZE];
-static int list_max = 0;
+static int exclude_max = 0;
 static char *exclude_symlink_list[EXCLUDE_LIST_SIZE];
 static int exclude_symlink_length[EXCLUDE_LIST_SIZE];
 static int exclude_symlink_max = 0;
+static char *include_list[EXCLUDE_LIST_SIZE];
+static int include_length[EXCLUDE_LIST_SIZE];
+static int include_max = 0;
 static int first = 0;
 
 
@@ -60,6 +63,7 @@ char *preserve_env_list[] = {
     "FAKECHROOT_DETECT",
     "FAKECHROOT_ELFLOADER",
     "FAKECHROOT_ELFLOADER_OPT_ARGV0",
+    "FAKECHROOT_INCLUDE_PATH",
     "FAKECHROOT_EXCLUDE_PATH",
     "FAKECHROOT_EXCLUDE_SYMLINK",
     "FAKECHROOT_LDLIBPATH",
@@ -91,7 +95,7 @@ LOCAL int fakechroot_debug (const char *fmt, ...)
     return ret;
 }
 
-#define exclude_init(path, list, length, list_max) \
+#define list_init(path, list, length, list_max) \
     { \
         int i; \
             for (i = 0; list_max < EXCLUDE_LIST_SIZE; ) { \
@@ -134,15 +138,20 @@ void fakechroot_init (void)
     if (!first) {
         first = 1;
 
-        /* We get a list of directories or files */
-        char *exclude_path = getenv("FAKECHROOT_EXCLUDE_PATH");
-        if (exclude_path)
-            exclude_init(exclude_path, exclude_list, exclude_length, list_max);
+        /* We get a list of directories or files to exclude */
+        char *list = getenv("FAKECHROOT_EXCLUDE_PATH");
+        if (list)
+            list_init(list, exclude_list, exclude_length, exclude_max);
 
-        /* We get a list of symlinks */
-        exclude_path = getenv("FAKECHROOT_EXCLUDE_SYMLINK");
-        if (exclude_path)
-            exclude_init(exclude_path, exclude_symlink_list, exclude_symlink_length, exclude_symlink_max);
+        /* We get a list of directories of files to include */
+        list = getenv("FAKECHROOT_INCLUDE_PATH");
+        if (list)
+            list_init(list, include_list, include_length, include_max);
+
+        /* We get a list of symlinks to exclude */
+        list = getenv("FAKECHROOT_EXCLUDE_SYMLINK");
+        if (list)
+            list_init(list, exclude_symlink_list, exclude_symlink_length, exclude_symlink_max);
 
         __setenv("FAKECHROOT", "true", 1);
         __setenv("FAKECHROOT_VERSION", FAKECHROOT, 1);
@@ -163,17 +172,17 @@ LOCAL fakechroot_wrapperfn_t fakechroot_loadfunc (struct fakechroot_wrapper * w)
 }
 
 
-/* Check if is path is on exclude list */
-LOCAL int fakechroot_is_excluded (const char * v_path, char * const exclude_list[], int exclude_length[], int list_max)
+/* Check if path is on list */
+LOCAL int fakechroot_is_listed (const char * v_path, char * const list[], int length[], int list_max)
 {
     const size_t len = strlen(v_path);
     int i;
 
     for (i = 0; i < list_max; i++) {
-        if (exclude_length[i] > len ||
-            v_path[exclude_length[i] - 1] != (exclude_list[i])[exclude_length[i] - 1] ||
-            strncmp(exclude_list[i], v_path, exclude_length[i]) != 0) continue;
-        if (exclude_length[i] == len || v_path[exclude_length[i]] == '/') return 1;
+        if (length[i] > len ||
+            v_path[length[i] - 1] != (list[i])[length[i] - 1] ||
+            strncmp(list[i], v_path, length[i]) != 0) continue;
+        if (length[i] == len || v_path[length[i]] == '/') return 1;
     }
 
     return 0;
@@ -200,7 +209,9 @@ LOCAL int fakechroot_localdir (const char * p_path)
     }
 
     /* We try to find if we need direct access to a file */
-    return fakechroot_is_excluded (v_path, exclude_list, exclude_length, exclude_max);
+    if (fakechroot_is_listed (v_path, include_list, include_length, include_max))
+        return 1;
+    return fakechroot_is_listed (v_path, exclude_list, exclude_length, exclude_max);
 }
 
 
@@ -224,7 +235,7 @@ LOCAL int fakechroot_localsymlink (const char * p_path)
     }
 
     /* We try to find if we need direct access to a file */
-    return fakechroot_is_excluded(v_path, exclude_symlink_list, exclude_symlink_length, exclude_symlink_max);
+    return fakechroot_is_listed (v_path, exclude_symlink_list, exclude_symlink_length, exclude_symlink_max);
 }
 
 
