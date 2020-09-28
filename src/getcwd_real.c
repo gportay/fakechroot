@@ -139,6 +139,9 @@ LOCAL char * getcwd_real(char *buf, size_t size)
 # include "__lxstat64.h"
 # define STAT_T stat64
 # define FSTAT fstat64
+# ifndef _STAT_VER
+#  define _STAT_VER      3
+# endif
 # define LSTAT(path, buf) nextcall(__lxstat64)(_STAT_VER, path, buf)
 #else
 # include "lstat.h"

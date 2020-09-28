@@ -22,12 +22,14 @@
 
 #ifdef HAVE_STATVFS64
 
-#define _LARGEFILE64_SOURCE
+#if defined(__GLIBC__)
+# define _LARGEFILE64_SOURCE
+#endif
 #include <sys/statvfs.h>
 #include "libfakechroot.h"
 
 
-wrapper(statvfs64, int, (const char * path, struct statvfs64 * buf))
+wrapper(statvfs64, int, (const char * path, struct statvfs * buf))
 {
     char fakechroot_abspath[FAKECHROOT_PATH_MAX];
     char fakechroot_buf[FAKECHROOT_PATH_MAX];

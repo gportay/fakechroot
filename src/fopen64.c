@@ -22,7 +22,9 @@
 
 #ifdef HAVE_FOPEN64
 
-#define _LARGEFILE64_SOURCE
+#if defined(__GLIBC__)
+# define _LARGEFILE64_SOURCE 1
+#endif
 #include <stdio.h>
 #include "libfakechroot.h"
 

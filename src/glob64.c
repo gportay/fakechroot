@@ -22,7 +22,11 @@
 
 #ifdef HAVE_GLOB64
 
-#define _LARGEFILE64_SOURCE
+#if defined(__GLIBC__)
+# define _LARGEFILE64_SOURCE
+#else
+# define glob64_t glob_t
+#endif
 #include <glob.h>
 #include "libfakechroot.h"
 

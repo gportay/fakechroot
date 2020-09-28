@@ -22,6 +22,7 @@
 # include <config.h>
 #endif
 
+#if defined(__GLIBC__)
 #if ((!defined(__FTW64_C) && HAVE_FTW) || (defined(__FTW64_C) && HAVE_FTW64)) \
  && !defined(OPENDIR_CALLS___OPEN) && !defined(OPENDIR_CALLS___OPENDIR2) && !defined(HAVE__XFTW)
 
@@ -108,6 +109,59 @@ char *alloca ();
 #else
 # include <sys/stat.h>
 #endif
+
+#if !defined(__GLIBC__)
+# include "rawmemchr.h"
+# ifndef _STAT_VER
+#  define _STAT_VER      3
+# endif
+typedef int (*__ftw_func_t) (const char *__filename,
+                             const struct stat *__status, int __flag);
+
+typedef int (*__nftw_func_t) (const char *__filename,
+                              const struct stat *__status, int __flag,
+                              struct FTW *__info);
+typedef int (*__nftw64_func_t) (const char *__filename,
+                                const struct stat64 *__status,
+                                int __flag, struct FTW *__info);
+
+enum
+{
+#if 0
+  FTW_PHYS = 1,         /* Perform physical walk, ignore symlinks.  */
+# define FTW_PHYS       FTW_PHYS
+  FTW_MOUNT = 2,        /* Report only files on same file system as the
+                           argument.  */
+# define FTW_MOUNT      FTW_MOUNT
+  FTW_CHDIR = 4,        /* Change to current directory while processing it.  */
+# define FTW_CHDIR      FTW_CHDIR
+  FTW_DEPTH = 8         /* Report files in directory before directory itself.*/
+# define FTW_DEPTH      FTW_DEPTH
+  ,
+#endif
+  FTW_ACTIONRETVAL = 16 /* Assume callback to return FTW_* values instead of
+                           zero to continue and non-zero to terminate.  */
+#  define FTW_ACTIONRETVAL FTW_ACTIONRETVAL
+};
+
+enum
+{
+  FTW_CONTINUE = 0,     /* Continue with next sibling or for FTW_D with the
+                           first child.  */
+# define FTW_CONTINUE   FTW_CONTINUE
+  FTW_STOP = 1,         /* Return from `ftw' or `nftw' with FTW_STOP as return
+                           value.  */
+# define FTW_STOP       FTW_STOP
+  FTW_SKIP_SUBTREE = 2, /* Only meaningful for FTW_D: Don't walk through the
+                           subtree, instead just continue with its next
+                           sibling. */
+# define FTW_SKIP_SUBTREE FTW_SKIP_SUBTREE
+  FTW_SKIP_SIBLINGS = 3,/* Continue with FTW_DP callback for current directory
+                            (if FTW_DEPTH) and then its siblings.  */
+# define FTW_SKIP_SIBLINGS FTW_SKIP_SIBLINGS
+};
+#endif
+
 
 #include "libfakechroot.h"
 
@@ -938,4 +992,5 @@ compat_symbol (libc, NFTW_OLD_NAME, NFTW_NAME, GLIBC_2_1);
 
 #else
 typedef int empty_translation_unit;
+#endif
 #endif
