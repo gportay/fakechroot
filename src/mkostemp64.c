@@ -22,8 +22,10 @@
 
 #ifdef HAVE_MKOSTEMP64
 
-#define _GNU_SOURCE
-#define _LARGEFILE64_SOURCE
+#if defined(__GLIBC__)
+# define _GNU_SOURCE
+# define _LARGEFILE64_SOURCE
+#endif
 #include <stdlib.h>
 
 #include "libfakechroot.h"

@@ -22,9 +22,11 @@
 
 #ifdef HAVE_MKSTEMP64
 
-#define _LARGEFILE64_SOURCE
-#define _BSD_SOURCE
-#define _DEFAULT_SOURCE
+#if defined(__GLIBC__)
+# define _LARGEFILE64_SOURCE
+# define _BSD_SOURCE
+# define _DEFAULT_SOURCE
+#endif
 #include <stdlib.h>
 
 #include "libfakechroot.h"

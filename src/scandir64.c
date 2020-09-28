@@ -22,7 +22,11 @@
 
 #ifdef HAVE_SCANDIR64
 
-#define _LARGEFILE64_SOURCE
+#if defined(__GLIBC__)
+# define _LARGEFILE64_SOURCE
+#else
+# define dirent64 dirent
+#endif
 #include <dirent.h>
 #include "libfakechroot.h"
 

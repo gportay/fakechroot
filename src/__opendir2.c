@@ -58,7 +58,7 @@
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)opendir.c   8.8 (Berkeley) 5/1/95";
 #endif /* LIBC_SCCS and not lint */
-#include <sys/cdefs.h>
+//#include <sys/cdefs.h>
 __FBSDID("$FreeBSD: src/lib/libc/gen/opendir.c,v 1.25.2.2.2.1 2010/06/14 02:09:06 kensmith Exp $");
 
 /*#include "namespace.h"*/

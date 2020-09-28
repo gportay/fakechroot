@@ -23,7 +23,7 @@
 
 #define strlcpy __strlcpy
 
-#include <sys/cdefs.h>
+//#include <sys/cdefs.h>
 #include <sys/types.h>
 
 size_t strlcpy(char *, const char *, size_t);
