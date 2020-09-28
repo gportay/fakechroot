@@ -35,6 +35,9 @@
 #ifdef HAVE___XSTAT64
 # include "__xstat64.h"
 # define STAT_T stat64
+# ifndef _STAT_VER
+#  define _STAT_VER      3
+# endif
 # define STAT(path, sb) nextcall(__xstat64)(_STAT_VER, path, sb)
 #else
 # include "stat.h"

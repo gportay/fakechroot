@@ -50,6 +50,11 @@
 #include <unistd.h>
 
 
+#if !defined(__GLIBC__)
+extern char **__environ;
+#endif
+
+
 /* If this variable is not a null pointer we allocated the current
    environment.  */
 static char **last_environ;

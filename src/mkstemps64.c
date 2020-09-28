@@ -22,8 +22,10 @@
 
 #ifdef HAVE_MKSTEMPS64
 
-#define _DEFAULT_SOURCE
-#define _LARGEFILE64_SOURCE
+#if defined(__GLIBC__)
+# define _DEFAULT_SOURCE
+# define _LARGEFILE64_SOURCE
+#endif
 #include <errno.h>
 #include <stdlib.h>
 

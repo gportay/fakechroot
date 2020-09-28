@@ -32,6 +32,7 @@
 
 #include <config.h>
 
+#if defined(__GLIBC__)
 #if !defined FTS64_C__ || (defined FTS64_C__ && HAVE_FTS64_OPEN)
 
 #define _ATFILE_SOURCE
@@ -1151,4 +1152,5 @@ bail:
 
 #else
 typedef int empty_translation_unit;
+#endif
 #endif

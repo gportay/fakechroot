@@ -22,7 +22,9 @@
 
 #ifdef HAVE_OPEN64
 
-#define _LARGEFILE64_SOURCE
+#if defined(__GLIBC__)
+# define _LARGEFILE64_SOURCE
+#endif
 #include <stdarg.h>
 #include <stddef.h>
 #include <fcntl.h>
