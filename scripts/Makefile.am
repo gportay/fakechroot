@@ -1,10 +1,10 @@
 sysconfdir = @sysconfdir@/@PACKAGE@
 
-src_wrappers = chroot.fakechroot.sh env.fakechroot.sh fakechroot.sh ldd.fakechroot.pl unshare.fakechroot
+src_wrappers = ld-musl-x86_64.so.1.fakechroot.sh chroot.fakechroot.sh env.fakechroot.sh fakechroot.sh ldd.fakechroot.pl unshare.fakechroot
 src_envs = alpine-make-rootfs.env.sh arch-chroot.env.sh chroot.env.sh debootstrap.env.sh dnf.env.sh pacstrap.env.sh rinse.env.sh
 example_scripts = relocatesymlinks.sh restoremode.sh savemode.sh
 
-bin_SCRIPTS = env.fakechroot fakechroot ldd.fakechroot unshare.fakechroot
+bin_SCRIPTS = ld-musl-x86_64.so.1.fakechroot env.fakechroot fakechroot ldd.fakechroot unshare.fakechroot
 sbin_SCRIPTS = chroot.fakechroot
 sysconf_DATA = alpine-make-rootfs.env arch-chroot.env chroot.env dnf.env dnf-3.env debootstrap.env pacstrap.env rinse.env
 
@@ -71,6 +71,10 @@ env.fakechroot: $(srcdir)/env.fakechroot.sh
 
 fakechroot: $(srcdir)/fakechroot.sh
 	$(do_subst) < $(srcdir)/fakechroot.sh > $@
+	chmod +x $@
+
+ld-musl-x86_64.so.1.fakechroot: $(srcdir)/ld-musl-x86_64.so.1.fakechroot.sh
+	$(do_subst) < $(srcdir)/ld-musl-x86_64.so.1.fakechroot.sh > $@
 	chmod +x $@
 
 ldd.fakechroot: $(srcdir)/ldd.fakechroot.pl
