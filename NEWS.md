@@ -12,6 +12,9 @@ XX Xxx XXXX
   by the environment variable `FAKECHROOT_EXCLUDE_SYMLINK`. That list contains
   at most 100 elements.
 * New `mount`(2), `umount`(2) and `umount2`(2) functions were added.
+* New variable `FAKECHROOT_INCLUDE_PATH` was added `fakechroot`(1) expands
+  absolute directories and files listed by that environment variable. That list
+  contains at most 100 elements. Opposite of `FAKECHROOT_EXCLUDE_PATH`.
 
 ## Version 2.20.1
 
