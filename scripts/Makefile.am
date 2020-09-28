@@ -1,10 +1,10 @@
 sysconfdir = @sysconfdir@/@PACKAGE@
 
-src_wrappers = chroot.fakechroot.sh env.fakechroot.sh fakechroot.sh ldd.fakechroot.pl unshare.fakechroot
+src_wrappers = busybox.fakechroot.sh chroot.fakechroot.sh env.fakechroot.sh fakechroot.sh ldd.fakechroot.pl unshare.fakechroot
 src_envs = alpine-make-rootfs.env.sh arch-chroot.env.sh chroot.env.sh debootstrap.env.sh dnf.env.sh pacstrap.env.sh rinse.env.sh
 example_scripts = relocatesymlinks.sh restoremode.sh savemode.sh
 
-bin_SCRIPTS = env.fakechroot fakechroot ldd.fakechroot unshare.fakechroot
+bin_SCRIPTS = busybox.fakechroot env.fakechroot fakechroot ldd.fakechroot unshare.fakechroot
 sbin_SCRIPTS = chroot.fakechroot
 sysconf_DATA = alpine-make-rootfs.env arch-chroot.env chroot.env dnf.env dnf-3.env debootstrap.env pacstrap.env rinse.env
 
@@ -63,6 +63,10 @@ dnf-3.env: dnf.env
 
 pacstrap.env: $(srcdir)/pacstrap.env.sh
 	$(do_subst) < $(srcdir)/pacstrap.env.sh > $@
+	chmod +x $@
+
+busybox.fakechroot: $(srcdir)/busybox.fakechroot.sh
+	$(do_subst) < $(srcdir)/busybox.fakechroot.sh > $@
 	chmod +x $@
 
 env.fakechroot: $(srcdir)/env.fakechroot.sh
