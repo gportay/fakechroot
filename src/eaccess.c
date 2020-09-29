@@ -30,6 +30,7 @@ wrapper(eaccess, int, (const char * pathname, int mode))
     char fakechroot_buf[FAKECHROOT_PATH_MAX];
     debug("eaccess(\"%s\", %d)", pathname, mode);
     expand_chroot_path(pathname);
+    debug("0 - eaccess(\"%s\", %d)", pathname, mode);
     return nextcall(eaccess)(pathname, mode);
 }
 

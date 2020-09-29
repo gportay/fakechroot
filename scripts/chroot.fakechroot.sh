@@ -8,6 +8,12 @@
 #
 # (c) 2011, 2013, 2016 Piotr Roszatycki <dexter@debian.org>, LGPL
 
+echo "$0" "$@" >&2
+echo "$0" "$@" >&2
+echo "$0" "$@" >&2
+echo "$0" "$@" >&2
+echo "$0" "$@" >&2
+echo "$0" "$@" >&2
 
 fakechroot_chroot_load_ldsoconf () {
     fakechroot_chroot_files="$1"

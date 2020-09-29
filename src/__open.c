@@ -40,6 +40,7 @@ wrapper(__open, int, (const char * pathname, int flags, ...))
 
     debug("__open(\"%s\", %d, ...)", pathname, flags);
     expand_chroot_path(pathname);
+    debug("0 - __open(\"%s\", %d, ...)", pathname, flags);
 
     if (flags & O_CREAT) {
         mode = va_arg(arg, int);

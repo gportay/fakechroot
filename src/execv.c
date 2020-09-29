@@ -24,6 +24,9 @@
 #include <unistd.h>
 #include "libfakechroot.h"
 
+#include <stdio.h>
+
+
 #ifndef __GLIBC__
 extern char **environ;
 #endif
@@ -32,5 +35,6 @@ extern char **environ;
 wrapper(execv, int, (const char * path, char * const argv []))
 {
     debug("execv(\"%s\", {\"%s\", ...})", path, argv[0]);
+    fprintf(stderr, "execv(\"%s\", {\"%s\", ...})", path, argv[0]);
     return execve(path, argv, environ);
 }

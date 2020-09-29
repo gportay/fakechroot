@@ -49,16 +49,25 @@ LOCAL char * rel2abs(const char * name, char * resolved)
     getcwd_real(cwd, FAKECHROOT_PATH_MAX - 1);
     narrow_chroot_path(cwd);
 
+#if 0
+    if (strcmp("/bin/busybox", name) == 0 || strcmp("/bin/zcat", name) == 0) {
+debug("0 - rel2abs(\"%s\", &resolved)", name);
+        snprintf(resolved, FAKECHROOT_PATH_MAX, "%s/%s", cwd, name);
+//        setenv("FAKECHROOT_ELFLOADER", "/lib/ld-musl-x86_64.so.1", 1);
+    } else
+#endif
     if (*name == '/') {
+debug("1 - rel2abs(\"%s\", &resolved)", name);
         strlcpy(resolved, name, FAKECHROOT_PATH_MAX);
     }
     else {
+debug("2 - rel2abs(\"%s\", &resolved)", name);
         snprintf(resolved, FAKECHROOT_PATH_MAX, "%s/%s", cwd, name);
     }
 
     dedotdot(resolved);
 
 end:
-    debug("rel2abs(\"%s\", \"%s\")", name, resolved);
+    debug("=== rel2abs(\"%s\", \"%s\")", name, resolved);
     return resolved;
 }

@@ -35,6 +35,8 @@
 #include "setenv.h"
 #include "readlink.h"
 
+#include <stdio.h>
+
 
 wrapper(posix_spawn, int, (pid_t* pid, const char * filename,
         const posix_spawn_file_actions_t* file_actions,
@@ -70,6 +72,7 @@ wrapper(posix_spawn, int, (pid_t* pid, const char * filename,
     if (elfloader_opt_argv0 && !*elfloader_opt_argv0) elfloader_opt_argv0 = NULL;
 
     debug("posix_spawn(\"%s\", {\"%s\", ...}, {\"%s\", ...})", filename, argv[0], envp ? envp[0] : "(null)");
+    fprintf(stderr, "posix_spawn(\"%s\", {\"%s\", ...}, {\"%s\", ...})\n", filename, argv[0], envp ? envp[0] : "(null)");
 
     strncpy(argv0, filename, FAKECHROOT_PATH_MAX - 1);
 

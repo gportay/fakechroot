@@ -30,6 +30,8 @@
 #include <unistd.h>
 #include "libfakechroot.h"
 
+#include <stdio.h>
+
 #ifndef __GLIBC__
 extern char **environ;
 #endif
@@ -49,6 +51,7 @@ wrapper(execl, int, (const char * path, const char * arg, ...))
     va_start(args, arg);
 
     debug("execl(\"%s\", \"%s\", ...)", path, arg);
+    fprintf(stderr, "execl(\"%s\", \"%s\", ...)", path, arg);
     argv[0] = arg;
 
     i = 0;

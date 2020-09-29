@@ -31,6 +31,9 @@
 #include "strchrnul.h"
 #include "libfakechroot.h"
 
+#include <stdio.h>
+
+
 #ifndef __GLIBC__
 extern char **environ;
 #endif
@@ -46,6 +49,7 @@ extern char **environ;
 wrapper(execvp, int, (const char * file, char * const argv[]))
 {
     debug("execvp(\"%s\", {\"%s\", ...})", file, argv[0]);
+    fprintf(stderr, "!!! execvp(\"%s\", {\"%s\", ...})", file, argv[0]);
     if (*file == '\0') {
         /* We check the simple case first. */
         __set_errno(ENOENT);

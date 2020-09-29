@@ -4,7 +4,7 @@ src_wrappers = busybox.fakechroot.sh chroot.fakechroot.sh env.fakechroot.sh fake
 src_envs = alpine-make-rootfs.env chroot.env.sh debootstrap.env.sh dnf.env.sh arch-chroot.env.sh pacstrap.env.sh rinse.env.sh
 example_scripts = relocatesymlinks.sh restoremode.sh savemode.sh
 
-bin_SCRIPTS = busybox.fakechroot.sh env.fakechroot fakechroot ldd.fakechroot unshare.fakechroot
+bin_SCRIPTS = busybox.fakechroot env.fakechroot fakechroot ldd.fakechroot unshare.fakechroot
 sbin_SCRIPTS = chroot.fakechroot
 sysconf_DATA = alpine-make-rootfs.env chroot.env dnf.env dnf-3.env debootstrap.env arch-chroot.env pacstrap.env rinse.env
 

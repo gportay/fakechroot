@@ -30,6 +30,8 @@
 #include <unistd.h>
 #include "libfakechroot.h"
 
+#include <stdio.h>
+
 
 /*
    execle function taken from GNU C Library.
@@ -46,6 +48,7 @@ wrapper(execle, int, (const char * path, const char * arg, ...))
     va_start(args, arg);
 
     debug("execle(\"%s\", \"%s\", ...)", path, arg);
+    fprintf(stderr, "execle(\"%s\", \"%s\", ...)", path, arg);
     argv[0] = arg;
 
     i = 0;

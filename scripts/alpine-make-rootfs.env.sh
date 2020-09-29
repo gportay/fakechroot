@@ -9,16 +9,20 @@ fi
 # Set a list of command substitutions needed by alpine-make-rootfs
 fakechroot_alpine_make_rootfs_env_cmd_subst="@MOUNT@=/bin/true
 @UMOUNT@=/bin/true
+/bin/busybox=${fakechroot_bindir:-@bindir@}/busybox.fakechroot
 @CHROOT@=${fakechroot_bindir:-@sbindir@}/chroot.fakechroot
-@LDCONFIG@=/bin/true
 @LDD@=${fakechroot_bindir:-@bindir@}/ldd.fakechroot"
 
 FAKECHROOT_CMD_SUBST="${FAKECHROOT_CMD_SUBST:+$FAKECHROOT_CMD_SUBST:}`echo \"$fakechroot_alpine_make_rootfs_env_cmd_subst\" | tr '\012' ':'`"
 export FAKECHROOT_CMD_SUBST
 
 # Set the default list of directories excluded from being chrooted
-FAKECHROOT_EXCLUDE_PATH="${FAKECHROOT_EXCLUDE_PATH:-/dev:/proc:/sys}"
+FAKECHROOT_EXCLUDE_PATH="${FAKECHROOT_EXCLUDE_PATH:-/dev:/proc:/sys:/bin/sh}"
 export FAKECHROOT_EXCLUDE_PATH
+
+# Set the default list of directories and files included from being chrooted
+FAKECHROOT_INCLUDE_PATH="${FAKECHROOT_INCLUDE_PATH:-/etc/shadow}"
+export FAKECHROOT_INCLUDE_PATH
 
 # Set the LD_LIBRARY_PATH based on host's /etc/ld.so.conf.d/*
 fakechroot_alpine_make_rootfs_env_paths=`

@@ -34,6 +34,8 @@
 #include "setenv.h"
 #include "readlink.h"
 
+#include <stdio.h>
+
 
 wrapper(execve, int, (const char * filename, char * const argv [], char * const envp []))
 {
@@ -66,6 +68,12 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     if (elfloader_opt_argv0 && !*elfloader_opt_argv0) elfloader_opt_argv0 = NULL;
 
     debug("execve(\"%s\", {\"%s\", ...}, {\"%s\", ...})", filename, argv[0], envp ? envp[0] : "(null)");
+    fprintf(stderr, "execve(\"%s\", {\"%s\", ...}, {\"%s\", ...})\n", filename, argv[0], envp ? envp[0] : "(null)");
+    fprintf(stderr, "filename='%s'\n", filename);
+    fprintf(stderr, "elfloader='%s'\n", elfloader);
+    fprintf(stderr, "elfloader_opt_argv0='%s'\n", elfloader_opt_argv0);
+//    setenv("FAKECHROOT_DEBUG", "1", 1);
+    unsetenv("FAKECHROOT_DEBUG");
 
     strncpy(argv0, filename, FAKECHROOT_PATH_MAX - 1);
 
@@ -153,6 +161,7 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
         return -1;
     }
 
+    fprintf(stderr, "do_cmd_subst=%d\n", do_cmd_subst);
     if (do_cmd_subst) {
         newenvp[newenvppos] = malloc(strlen("FAKECHROOT_CMD_ORIG=") + strlen(filename) + 1);
         strcpy(newenvp[newenvppos], "FAKECHROOT_CMD_ORIG=");
@@ -165,7 +174,10 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     /* Exec substituted command */
     if (do_cmd_subst) {
         debug("nextcall(execve)(\"%s\", {\"%s\", ...}, {\"%s\", ...})", substfilename, argv[0], newenvp[0]);
+        fprintf(stderr, "nextcall(execve)(\"%s\", {\"%s\", ...}, {\"%s\", ...})\n", substfilename, argv[0], newenvp[0]);
         status = nextcall(execve)(substfilename, (char * const *)argv, newenvp);
+        fprintf(stderr, "status: %d\n", status);
+        perror("nextcall(execve)");
         goto error;
     }
 
@@ -173,6 +185,7 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     expand_chroot_path(filename);
     strcpy(tmp, filename);
     filename = tmp;
+    fprintf(stderr, "filename='%s'\n", filename);
 
     if ((file = nextcall(open)(filename, O_RDONLY)) == -1) {
         __set_errno(ENOENT);
@@ -187,9 +200,14 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     }
 
     /* No hashbang in argv */
+    fprintf(stderr, "hashbang='%c%c'\n", hashbang[0], hashbang[1]);
     if (hashbang[0] != '#' || hashbang[1] != '!') {
+        fprintf(stderr, "elfloader='%s'\n", elfloader);
         if (!elfloader) {
+            fprintf(stderr, "nextcall(execve)(\"%s\", {\"%s\", \"%s\", ...}, {\"%s\", ...})\n", filename, newargv[0], newargv[n], newenvp[0]);
             status = nextcall(execve)(filename, argv, newenvp);
+            fprintf(stderr, "status: %d\n", status);
+            perror("nextcall(execve)");
             goto error;
         }
 
@@ -209,7 +227,10 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
         newargv[n] = filename;
 
         debug("nextcall(execve)(\"%s\", {\"%s\", \"%s\", ...}, {\"%s\", ...})", elfloader, newargv[0], newargv[n], newenvp[0]);
+        fprintf(stderr, "nextcall(execve)(\"%s\", {\"%s\", \"%s\", ...}, {\"%s\", ...})\n", elfloader, newargv[0], newargv[n], newenvp[0]);
         status = nextcall(execve)(elfloader, (char * const *)newargv, newenvp);
+        fprintf(stderr, "status: %d\n", status);
+        perror("nextcall(execve)");
         goto error;
     }
 
@@ -233,6 +254,7 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
         if (c == '\n' || c == 0)
             break;
     }
+    fprintf(stderr, "newfilename='%s'\n", newfilename);
 
     newargv[n++] = argv0;
 
@@ -243,7 +265,10 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     newargv[n] = 0;
 
     if (!elfloader) {
+        fprintf(stderr, "nextcall(execve)(\"%s\", {\"%s\", \"%s\", ...}, {\"%s\", ...})\n", newfilename, newargv[0], newargv[n], newenvp[0]);
         status = nextcall(execve)(newfilename, (char * const *)newargv, newenvp);
+        fprintf(stderr, "status: %d\n", status);
+        perror("nextcall(execve)");
         goto error;
     }
 
@@ -264,10 +289,12 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     }
     newargv[n] = newfilename;
     debug("nextcall(execve)(\"%s\", {\"%s\", \"%s\", \"%s\", ...}, {\"%s\", ...})", elfloader, newargv[0], newargv[1], newargv[n], newenvp[0]);
+    fprintf(stderr, "nextcall(execve)(\"%s\", {\"%s\", \"%s\", \"%s\", ...}, {\"%s\", ...})\n", elfloader, newargv[0], newargv[1], newargv[n], newenvp[0]);
     status = nextcall(execve)(elfloader, (char * const *)newargv, newenvp);
+    fprintf(stderr, "status: %d\n", status);
+    perror("nextcall(execve)");
 
 error:
     free(newenvp);
-
     return status;
 }

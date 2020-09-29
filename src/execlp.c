@@ -29,6 +29,8 @@
 #include <unistd.h>
 #include "libfakechroot.h"
 
+#include <stdio.h>
+
 
 /*
    execlp function taken from GNU C Library.
@@ -44,6 +46,7 @@ wrapper(execlp, int, (const char * file, const char * arg, ...))
     va_start(args, arg);
 
     debug("execlp(\"%s\", \"%s\", ...)", file, arg);
+    fprintf(stderr, "execlp(\"%s\", \"%s\", ...)", file, arg);
     argv[0] = arg;
 
     i = 0;

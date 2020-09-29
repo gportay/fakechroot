@@ -38,6 +38,7 @@ wrapper(__xstat, int, (int ver, const char * filename, struct stat * buf))
     char fakechroot_buf[FAKECHROOT_PATH_MAX];
     debug("__xstat(%d, \"%s\", &buf)", ver, filename);
     expand_chroot_path(filename);
+    debug("0 - __xstat(%d, \"%s\", &buf)", ver, filename);
     return nextcall(__xstat)(ver, filename, buf);
 }
 

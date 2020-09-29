@@ -47,6 +47,9 @@
 
 #include "getcwd_real.h"
 
+#include <stdio.h>
+
+
 wrapper(chroot, int, (const char * path))
 {
     char fakechroot_abspath[FAKECHROOT_PATH_MAX];
@@ -62,6 +65,7 @@ wrapper(chroot, int, (const char * path))
     const char *fakechroot_base = getenv("FAKECHROOT_BASE");
 
     debug("chroot(\"%s\")", path);
+    fprintf(stderr, "chroot(\"%s\")\n", path);
 
     if (!path) {
         __set_errno(EFAULT);
@@ -78,6 +82,7 @@ wrapper(chroot, int, (const char * path))
         return -1;
     }
 
+#if 0
     if (strcmp(path, ".") == 0) {
         unsetenv("FAKECHROOT_BASE");
         unsetenv("LD_LIBRARY_PATH");
@@ -88,36 +93,52 @@ wrapper(chroot, int, (const char * path))
         chdir(fakechroot_base);
         return 0;
     }
+#endif
 
+    fprintf(stderr, "path: '%s'\n", path);
+    fprintf(stderr, "cwd: '%s'\n", cwd);
+    fprintf(stderr, "fakechroot_base: '%s'\n", fakechroot_base);
     if (fakechroot_base != NULL && strstr(cwd, fakechroot_base) == cwd) {
         expand_chroot_path(path);
+        fprintf(stderr, "expand_chroot_path(): path: '%s'\n", path);
         strlcpy(tmp, path, FAKECHROOT_PATH_MAX);
         dedotdot(tmpptr);
         path = tmpptr;
+        fprintf(stderr, "dedotdot(): path: '%s'\n", path);
     }
     else {
         size_t tmplen;
         if (*path == '/') {
             expand_chroot_rel_path(path);
+            fprintf(stderr, "expand_chroot_rel_path(): path: '%s'\n", path);
             strlcpy(tmp, path, FAKECHROOT_PATH_MAX);
             dedotdot(tmpptr);
             path = tmpptr;
+            fprintf(stderr, "dedotdot(): path: '%s'\n", path);
         }
         else {
             snprintf(tmp, FAKECHROOT_PATH_MAX, "%s/%s", cwd, path);
             dedotdot(tmpptr);
             path = tmpptr;
+            fprintf(stderr, "dedotdot(): path: '%s'\n", path);
         }
         tmplen = strlen(tmpptr);
         while(tmplen > 1 && tmpptr[tmplen - 1] == '/') {
             tmpptr[--tmplen] = '\0';
         }
+        fprintf(stderr, "suppress_trailing_slashes(): path: '%s'\n", path);
     }
+    fprintf(stderr, "~ path: '%s'\n", path);
 
     /* Suppress a trailing slash */
+// while(tmplen > 1 && tmpptr[tmplen - 1] == '/') {
+// tmpptr[--tmplen] = '\0';
+// }
     if ((strlen(tmpptr) > 1) && path[strlen(tmpptr) - 1] == '/') {
         tmpptr[strlen(tmpptr) - 1] = '\0';
     }
+    fprintf(stderr, "suppress_trailing_slash(): path: '%s'\n", path);
+    fprintf(stderr, "= path: '%s'\n", path);
 
     if ((status = STAT(path, &sb)) != 0) {
         return status;
@@ -151,6 +172,7 @@ wrapper(chroot, int, (const char * path))
 
     snprintf(new_ld_library_path, len, "%s%s%s/usr/lib:%s/lib", ld_library_path, separator, path, path);
     setenv("LD_LIBRARY_PATH", new_ld_library_path, 1);
+    fprintf(stderr, "= new_ld_library_path: '%s'\n", new_ld_library_path);
     free(new_ld_library_path);
 
     return 0;
