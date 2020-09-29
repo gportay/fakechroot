@@ -49,6 +49,11 @@ LOCAL char * rel2abs(const char * name, char * resolved)
     getcwd_real(cwd, FAKECHROOT_PATH_MAX - 1);
     narrow_chroot_path(cwd);
 
+#if 0
+    if (strcmp("/bin/busybox", name) == 0 || strcmp("/bin/zcat", name) == 0) {
+        snprintf(resolved, FAKECHROOT_PATH_MAX, "%s/%s", cwd, name);
+    } else
+#endif
     if (*name == '/') {
         strlcpy(resolved, name, FAKECHROOT_PATH_MAX);
     }

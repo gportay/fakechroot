@@ -26,6 +26,7 @@
 #ifdef HAVE_ALLOCA_H
 # include <alloca.h>
 #endif
+#include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include "strchrnul.h"
@@ -166,6 +167,7 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     if (do_cmd_subst) {
         debug("nextcall(execve)(\"%s\", {\"%s\", ...}, {\"%s\", ...})", substfilename, argv[0], newenvp[0]);
         status = nextcall(execve)(substfilename, (char * const *)argv, newenvp);
+        perror("nextcall(execve)");
         goto error;
     }
 
@@ -190,6 +192,7 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     if (hashbang[0] != '#' || hashbang[1] != '!') {
         if (!elfloader) {
             status = nextcall(execve)(filename, argv, newenvp);
+            perror("nextcall(execve)");
             goto error;
         }
 
@@ -210,6 +213,7 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
 
         debug("nextcall(execve)(\"%s\", {\"%s\", \"%s\", ...}, {\"%s\", ...})", elfloader, newargv[0], newargv[n], newenvp[0]);
         status = nextcall(execve)(elfloader, (char * const *)newargv, newenvp);
+        perror("nextcall(execve)");
         goto error;
     }
 
@@ -244,6 +248,7 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
 
     if (!elfloader) {
         status = nextcall(execve)(newfilename, (char * const *)newargv, newenvp);
+        perror("nextcall(execve)");
         goto error;
     }
 
@@ -265,6 +270,7 @@ wrapper(execve, int, (const char * filename, char * const argv [], char * const 
     newargv[n] = newfilename;
     debug("nextcall(execve)(\"%s\", {\"%s\", \"%s\", \"%s\", ...}, {\"%s\", ...})", elfloader, newargv[0], newargv[1], newargv[n], newenvp[0]);
     status = nextcall(execve)(elfloader, (char * const *)newargv, newenvp);
+    perror("nextcall(execve)");
 
 error:
     free(newenvp);
