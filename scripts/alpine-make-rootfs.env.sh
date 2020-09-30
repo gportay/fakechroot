@@ -26,6 +26,10 @@ export FAKECHROOT_EXCLUDE_PATH
 FAKECHROOT_EXCLUDE_SYMLINK="${FAKECHROOT_EXCLUDE_SYMLINK:-/etc/systemd:/var/lib/dbus/machine-id}"
 export FAKECHROOT_EXCLUDE_SYMLINK
 
+# Set the default list of symlink strings excluded from being chrooted
+FAKECHROOT_EXCLUDE_SYMLINK_STRING="${FAKECHROOT_EXCLUDE_SYMLINK_STRING:-/bin/busybox:/bin/bbsuid:/bin/busybox-extra}"
+export FAKECHROOT_EXCLUDE_SYMLINK_STRING
+
 # Set the LD_LIBRARY_PATH based on host's /etc/ld.so.conf.d/*
 fakechroot_alpine_make_rootfs_env_paths=`
     cat /etc/ld.so.conf /etc/ld.so.conf.d/* 2>/dev/null | grep ^/ | while read fakechroot_alpine_make_rootfs_env_d; do

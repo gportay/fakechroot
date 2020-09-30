@@ -15,6 +15,9 @@ XX Xxx XXXX
 * New variable `FAKECHROOT_INCLUDE_PATH` was added `fakechroot`(1) expands
   absolute directories and files listed by that environment variable. That list
   contains at most 100 elements. Opposite of `FAKECHROOT_EXCLUDE_PATH`.
+* The `fakechroot`(1) disables symlink expansion for absolute symlink strings
+  listed by the environment variable `FAKECHROOT_EXCLUDE_SYMLINK_STRING`. That
+  list contains at most 100 elements.
 
 ## Version 2.20.1
 
