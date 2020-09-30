@@ -49,6 +49,9 @@ static int exclude_max = 0;
 static char *exclude_symlink_list[EXCLUDE_LIST_SIZE];
 static int exclude_symlink_length[EXCLUDE_LIST_SIZE];
 static int exclude_symlink_max = 0;
+static char *exclude_symlink_string_list[EXCLUDE_LIST_SIZE];
+static int exclude_symlink_string_length[EXCLUDE_LIST_SIZE];
+static int exclude_symlink_string_max = 0;
 static char *include_list[EXCLUDE_LIST_SIZE];
 static int include_length[EXCLUDE_LIST_SIZE];
 static int include_max = 0;
@@ -66,6 +69,7 @@ char *preserve_env_list[] = {
     "FAKECHROOT_INCLUDE_PATH",
     "FAKECHROOT_EXCLUDE_PATH",
     "FAKECHROOT_EXCLUDE_SYMLINK",
+    "FAKECHROOT_EXCLUDE_SYMLINK_STRING",
     "FAKECHROOT_LDLIBPATH",
     "FAKECHROOT_VERSION",
     "FAKEROOTKEY",
@@ -153,6 +157,11 @@ void fakechroot_init (void)
         if (list)
             list_init(list, exclude_symlink_list, exclude_symlink_length, exclude_symlink_max);
 
+        /* We get a list of symlink strings to exclude */
+        list = getenv("FAKECHROOT_EXCLUDE_SYMLINK_STRING");
+        if (list)
+            list_init(list, exclude_symlink_string_list, exclude_symlink_string_length, exclude_symlink_string_max);
+
         __setenv("FAKECHROOT", "true", 1);
         __setenv("FAKECHROOT_VERSION", FAKECHROOT, 1);
     }
@@ -217,7 +226,7 @@ LOCAL int fakechroot_localdir (const char * p_path)
 
 
 /* Check if symlink is on exclude list */
-LOCAL int fakechroot_localsymlink (const char * p_path)
+LOCAL int fakechroot_localsymlink (const char * p_string, const char * p_path)
 {
     char *v_path = (char *)p_path;
     char cwd_path[FAKECHROOT_PATH_MAX];
@@ -236,6 +245,8 @@ LOCAL int fakechroot_localsymlink (const char * p_path)
     }
 
     /* We try to find if we need direct access to a file */
+    if (fakechroot_is_listed (p_string, exclude_symlink_string_list, exclude_symlink_string_length, exclude_symlink_string_max))
+         return 1;
     return fakechroot_is_listed (v_path, exclude_symlink_list, exclude_symlink_length, exclude_symlink_max);
 }
 

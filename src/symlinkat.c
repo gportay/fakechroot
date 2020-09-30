@@ -32,7 +32,7 @@ wrapper(symlinkat, int, (const char * oldpath, int newdirfd, const char * newpat
     char fakechroot_buf[FAKECHROOT_PATH_MAX];
     char tmp[FAKECHROOT_PATH_MAX];
     debug("symlinkat(\"%s\", %d, \"%s\")", oldpath, newdirfd, newpath);
-    if (!fakechroot_localsymlink(newpath))
+    if (!fakechroot_localsymlink(oldpath, newpath))
         expand_chroot_rel_path(oldpath);
     strcpy(tmp, oldpath);
     oldpath = tmp;

@@ -25,9 +25,8 @@
 # export PWD="/path/to/chrooted/dir"
 # export SHLVL="2"
 
-# TODO: remove $FAKECHROOT_BASE_ORIG/bin
-LD_LIBRARY_PATH= \
-LD_PRELOAD= \
-"$FAKECHROOT_BASE_ORIG/lib/ld-musl-x86_64.so.1" --argv0 "$FAKECHROOT_CMD_ORIG" \
+FAKECHROOT_BASE="$FAKECHROOT_BASE_ORIG" \
+LD_LIBRARY_PATH="$FAKECHROOT_BASE_ORIG/usr/lib:$FAKECHROOT_BASE_ORIG/lib" \
+LD_PRELOAD="$FAKECHROOT_BASE_ORIG/usr/lib/libfakeroot/fakechroot/libfakechroot.so:$LD_PRELOAD" \
+/lib/ld-musl-x86_64.so.1 --argv0 "$FAKECHROOT_CMD_ORIG" \
 "$FAKECHROOT_BASE_ORIG$FAKECHROOT_CMD_ORIG" "$@" \
-"$FAKECHROOT_BASE_ORIG/bin"

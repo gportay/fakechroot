@@ -216,7 +216,7 @@ extern const int preserve_env_list_count;
 int fakechroot_debug (const char *, ...);
 fakechroot_wrapperfn_t fakechroot_loadfunc (struct fakechroot_wrapper *);
 int fakechroot_localdir (const char *);
-int fakechroot_localsymlink (const char *);
+int fakechroot_localsymlink (const char *, const char *);
 int fakechroot_try_cmd_subst (char *, const char *, char *);
 
 
