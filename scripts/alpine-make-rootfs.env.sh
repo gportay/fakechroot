@@ -27,7 +27,7 @@ FAKECHROOT_EXCLUDE_SYMLINK="${FAKECHROOT_EXCLUDE_SYMLINK:-/etc/systemd:/var/lib/
 export FAKECHROOT_EXCLUDE_SYMLINK
 
 # Set the default list of symlink strings excluded from being chrooted
-FAKECHROOT_EXCLUDE_SYMLINK_STRING="${FAKECHROOT_EXCLUDE_SYMLINK_STRING:-/bin/busybox}"
+FAKECHROOT_EXCLUDE_SYMLINK_STRING="${FAKECHROOT_EXCLUDE_SYMLINK_STRING:-/bin/busybox:/bin/bbsuid:/bin/busybox-extra}"
 export FAKECHROOT_EXCLUDE_SYMLINK_STRING
 
 # Set the LD_LIBRARY_PATH based on host's /etc/ld.so.conf.d/*
