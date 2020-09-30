@@ -146,15 +146,15 @@ AC_CHECK_FUNCS(m4_normalize([
     __lxstat
     __lxstat64
     __open
-    __open_2
     __open64
     __open64_2
-    __openat_2
+    __open_2
     __openat64_2
+    __openat_2
     __opendir2
-    __realpath_chk
     __readlink_chk
     __readlinkat_chk
+    __realpath_chk
     __statfs
     __xmknod
     __xmknodat
@@ -198,10 +198,10 @@ AC_CHECK_FUNCS(m4_normalize([
     freopen64
     fstat
     fstat64
+    fts64_open
     fts_children
     fts_open
     fts_read
-    fts64_open
     ftw
     ftw64
     futimesat
@@ -288,10 +288,10 @@ AC_CHECK_FUNCS(m4_normalize([
     tmpnam
     truncate
     truncate64
+    ulckpwdf
     unlink
     unlinkat
     unsetenv
-    ulckpwdf
     utime
     utimensat
     utimes
