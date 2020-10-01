@@ -108,7 +108,7 @@
             if ((path) != NULL && *((char *)(path)) == '/') { \
                 const char *fakechroot_base = getenv("FAKECHROOT_BASE"); \
                 if (fakechroot_base != NULL ) { \
-                    snprintf(fakechroot_buf, FAKECHROOT_PATH_MAX, "%s%s", fakechroot_base, (path)); \
+                    snprintf(fakechroot_buf, sizeof(fakechroot_buf), "%s%s", fakechroot_base, (path)); \
                     (path) = fakechroot_buf; \
                 } \
             } \
