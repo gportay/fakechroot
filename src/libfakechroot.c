@@ -288,3 +288,98 @@ LOCAL int fakechroot_try_cmd_subst (char * env, const char * filename, char * cm
 
     return 0;
 }
+
+/*
+ * Set the LD_LIBRARY_PATH environment variable using LD_LIBRARY_PATH if set
+ * and FAKECHROOT_LD_LIBRARY_PATH with FAKECHROOT_BASE prepend for every
+ * element in list. Returns non-zero if FAKECHROOT_BASE is unset or empty or if
+ * cannot setenv.
+ *
+ * LD_LIBRARY_PATH=[$LD_LIBRARY_PATH:][$FAKECHROOT_BASE$FAKECHROOT_LD_LIBRARY_PATH[0]:...]
+ */
+
+LOCAL int fakechroot_setenv_ld_library_path (int overwrite)
+{
+    char *base, *ld_library_path, *fakechroot_ld_library_path, *new_ld_library_path = NULL, *tmp = NULL;
+    char *token, *saveptr;
+    size_t len = 0;
+    int ret = -1;
+    char *str;
+
+    base = getenv("FAKECHROOT_BASE");
+    if (!base || !*base) {
+        __set_errno(EINVAL);
+        return -1;
+    }
+
+    ld_library_path = getenv("LD_LIBRARY_PATH");
+    if (ld_library_path && *ld_library_path)
+        len += strlen(ld_library_path);
+
+    fakechroot_ld_library_path = getenv("FAKECHROOT_LD_LIBRARY_PATH");
+    if (!fakechroot_ld_library_path)
+        fakechroot_ld_library_path = "/usr/lib:/lib";
+
+    tmp = strdup(fakechroot_ld_library_path);
+    if (!tmp) {
+        __set_errno(ENOMEM);
+	goto exit;
+    }
+    len += strlen(fakechroot_ld_library_path);
+
+    token = strtok_r(tmp, ":", &saveptr);
+    if (token && *token) {
+        len += strlen(base);
+        if (ld_library_path && *ld_library_path)
+            len++;
+        while (token = strtok_r(NULL, ":", &saveptr))
+            len += strlen(base);
+    }
+
+    if (!len) {
+        ret = 0;
+	goto exit;
+    }
+
+    len++; /* NUL */
+    new_ld_library_path = malloc(len);
+    if (!new_ld_library_path) {
+        __set_errno(ENOMEM);
+	goto exit;
+    }
+    *new_ld_library_path = 0;
+
+    str = new_ld_library_path;
+    if (ld_library_path && *ld_library_path) {
+        int n;
+        n = snprintf(str, len, "%s", ld_library_path);
+        str += n;
+        len -= n;
+    }
+
+    strcpy(tmp, fakechroot_ld_library_path);
+    token = strtok_r(tmp, ":", &saveptr);
+    if (token && *token) {
+        int n;
+        if (ld_library_path && *ld_library_path) {
+           *str++ = ':';
+           len--;
+        }
+        n = snprintf(str, len, "%s%s", base, token);
+        str += n;
+        len -= n;
+        while (token = strtok_r(NULL, ":", &saveptr)) {
+            n = snprintf(str, len, ":%s%s", base, token);
+            str += n;
+            len -= n;
+        }
+    }
+
+    ret = setenv("LD_LIBRARY_PATH", new_ld_library_path, overwrite);
+
+exit:
+    free(tmp);
+    free(new_ld_library_path);
+
+    return ret;
+}

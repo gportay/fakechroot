@@ -218,6 +218,7 @@ fakechroot_wrapperfn_t fakechroot_loadfunc (struct fakechroot_wrapper *);
 int fakechroot_localdir (const char *);
 int fakechroot_localsymlink (const char *, const char *);
 int fakechroot_try_cmd_subst (char *, const char *, char *);
+int fakechroot_setenv_ld_library_path (int);
 
 
 /* We don't want to define _BSD_SOURCE and _DEFAULT_SOURCE and include stdio.h */
